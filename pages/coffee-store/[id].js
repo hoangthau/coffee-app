@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -7,14 +8,33 @@ import cls from 'classnames';
 import styles from '../../styles/coffee-store.module.css';
 
 import { fetchCoffeeStores } from '@/lib/coffee-stores';
+import { useStore } from '@/store/store-context';
 
 export default function CoffeeStore(props) {
+  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
   const router = useRouter();
+  const id = router.query?.id;
 
-  const { name, address, neighbourhood, imgUrl } = props.coffeeStore || {};
-  const votingCount = 0;
+  const {
+    state: { coffeeStores },
+  } = useStore();
+
+  useEffect(() => {
+    if (props.coffeeStore) {
+      return;
+    }
+    if (coffeeStores) {
+      const store = coffeeStores?.find((item) => item.id.toString() === id);
+      setCoffeeStore(store);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const handleUpvoteButton = () => {};
+
+  const { name, address, neighbourhood, imgUrl } = coffeeStore || {};
+  const votingCount = 0;
 
   return (
     <div className={styles.layout}>
@@ -72,10 +92,10 @@ export default function CoffeeStore(props) {
 export async function getStaticProps(context) {
   const params = context.params;
   const coffeeStores = await fetchCoffeeStores();
-  const coffee = coffeeStores.find((item) => item.id.toString() === params.id);
+  const store = coffeeStores.find((item) => item.id.toString() === params.id);
   return {
     props: {
-      coffeeStore: coffee || {},
+      coffeeStore: store || null,
     },
   };
 }

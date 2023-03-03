@@ -8,11 +8,14 @@ import Card from '@/components/Card';
 
 import { fetchCoffeeStores } from '@/lib/coffee-stores';
 import useTrackLocation from '@/hooks/use-track-location';
+import { useStore, ACTION_TYPES } from '@/store/store-context';
 
 export default function Home(props) {
-  const [coffeeStores, setCoffeeStores] = useState();
   const { handleTrackLocation, latLong } = useTrackLocation();
   const [isLoading, setLoading] = useState(false);
+
+  const { dispatch, state } = useStore();
+  const coffeeStores = state.coffeeStores;
 
   const handleOnBannerClick = () => {
     setLoading(true);
@@ -22,10 +25,18 @@ export default function Home(props) {
   useEffect(() => {
     if (latLong) {
       fetchCoffeeStores(encodeURIComponent(latLong)).then((data) => {
-        setCoffeeStores(data);
         setLoading(false);
+        dispatch({
+          type: ACTION_TYPES.SET_COFFEE_STORES,
+          payload: data,
+        });
+        dispatch({
+          type: ACTION_TYPES.SET_LAT_LONG,
+          payload: latLong,
+        });
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latLong]);
 
   const items = coffeeStores || props?.coffeeStores || [];
