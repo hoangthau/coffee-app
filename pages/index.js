@@ -5,10 +5,17 @@ import styles from '@/styles/Home.module.css';
 import Banner from '@/components/Banner';
 import Card from '@/components/Card';
 
-export default function Home() {
+import { fetchCoffeeStores } from '@/lib/coffee-stores';
+
+export default function Home(props) {
   const handleOnBannerClick = () => {
     console.log('handleOnBannerClick');
   };
+
+  console.log('home', props);
+
+  const items = props?.coffeeStores || [];
+
   return (
     <>
       <Head>
@@ -28,8 +35,33 @@ export default function Home() {
           alt="hero-image"
           placeholder="blur"
         />
-        <Card name="DarkHouse" imgUrl="/static/hero-image.png" href="/coffee-store/darkhouse" />
+        {items.length > 0 ? (
+          <>
+            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <div className={styles.cardLayout}>
+              {items.map((item) => {
+                return (
+                  <Card
+                    key={item.id}
+                    name={item.name}
+                    imgUrl={item.imgUrl}
+                    href={`/coffee-store/${item.id}`}
+                  />
+                );
+              })}
+            </div>
+          </>
+        ) : null}
       </main>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const coffeeStores = await fetchCoffeeStores();
+  return {
+    props: {
+      coffeeStores,
+    },
+  };
 }
