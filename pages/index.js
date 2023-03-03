@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '@/styles/Home.module.css';
@@ -6,15 +7,28 @@ import Banner from '@/components/Banner';
 import Card from '@/components/Card';
 
 import { fetchCoffeeStores } from '@/lib/coffee-stores';
+import useTrackLocation from '@/hooks/use-track-location';
 
 export default function Home(props) {
+  const [coffeeStores, setCoffeeStores] = useState();
+  const { handleTrackLocation, latLong } = useTrackLocation();
+  const [isLoading, setLoading] = useState(false);
+
   const handleOnBannerClick = () => {
-    console.log('handleOnBannerClick');
+    setLoading(true);
+    handleTrackLocation();
   };
 
-  console.log('home', props);
+  useEffect(() => {
+    if (latLong) {
+      fetchCoffeeStores(encodeURIComponent(latLong)).then((data) => {
+        setCoffeeStores(data);
+        setLoading(false);
+      });
+    }
+  }, [latLong]);
 
-  const items = props?.coffeeStores || [];
+  const items = coffeeStores || props?.coffeeStores || [];
 
   return (
     <>
@@ -25,7 +39,11 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Banner buttonText="View store nearby" handleOnClick={handleOnBannerClick} />
+        <Banner
+          buttonText="View store nearby"
+          handleOnClick={handleOnBannerClick}
+          isLoading={isLoading}
+        />
         <Image
           className={styles.heroImage}
           src="/static/hero-image.png"
@@ -37,7 +55,7 @@ export default function Home(props) {
         />
         {items.length > 0 ? (
           <>
-            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <h2 className={styles.heading2}>{coffeeStores ? 'Stores near me' : 'Some Stores'}</h2>
             <div className={styles.cardLayout}>
               {items.map((item) => {
                 return (

@@ -11,7 +11,7 @@ import { fetchCoffeeStores } from '@/lib/coffee-stores';
 export default function CoffeeStore(props) {
   const router = useRouter();
 
-  const { name, address, neighbourhood, imgUrl } = props.coffeeStore;
+  const { name, address, neighbourhood, imgUrl } = props.coffeeStore || {};
   const votingCount = 0;
 
   const handleUpvoteButton = () => {};
@@ -38,7 +38,7 @@ export default function CoffeeStore(props) {
             width={600}
             height={360}
             className={styles.storeImg}
-            alt={name}
+            alt={name || 'img'}
           />
         </div>
 
@@ -75,7 +75,7 @@ export async function getStaticProps(context) {
   const coffee = coffeeStores.find((item) => item.id.toString() === params.id);
   return {
     props: {
-      coffeeStore: coffee ?? {},
+      coffeeStore: coffee || {},
     },
   };
 }
@@ -91,6 +91,6 @@ export async function getStaticPaths() {
   });
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }

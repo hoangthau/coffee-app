@@ -9,8 +9,8 @@ export default function Banner(props) {
       </h1>
       <p className={styles.subTitle}>Discover your local coffee stores!</p>
       <div className={styles.buttonWrapper}>
-        <button className={styles.button} onClick={props.handleOnClick}>
-          {props.buttonText}
+        <button disabled={props.isLoading} className={styles.button} onClick={props.handleOnClick}>
+          {props.isLoading ? 'Loading...' : props.buttonText}
         </button>
       </div>
     </div>
