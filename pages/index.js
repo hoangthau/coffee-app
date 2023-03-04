@@ -24,17 +24,20 @@ export default function Home(props) {
 
   useEffect(() => {
     if (latLong) {
-      fetchCoffeeStores(encodeURIComponent(latLong)).then((data) => {
-        setLoading(false);
-        dispatch({
-          type: ACTION_TYPES.SET_COFFEE_STORES,
-          payload: data,
+      const query = encodeURIComponent(latLong);
+      fetch(`/api/getCoffeeStoresByLocation?latLong=${query}`)
+        .then((res) => res.json())
+        .then((res) => {
+          setLoading(false);
+          dispatch({
+            type: ACTION_TYPES.SET_COFFEE_STORES,
+            payload: res.data,
+          });
+          dispatch({
+            type: ACTION_TYPES.SET_LAT_LONG,
+            payload: latLong,
+          });
         });
-        dispatch({
-          type: ACTION_TYPES.SET_LAT_LONG,
-          payload: latLong,
-        });
-      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latLong]);
@@ -87,7 +90,7 @@ export default function Home(props) {
 }
 
 export async function getStaticProps() {
-  const coffeeStores = await fetchCoffeeStores();
+  let coffeeStores = await fetchCoffeeStores();
   return {
     props: {
       coffeeStores,
