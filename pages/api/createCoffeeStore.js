@@ -22,7 +22,7 @@ const createCoffeeStore = async (req, res) => {
                   name,
                   address,
                   neighbourhood,
-                  voting,
+                  voting: voting || 0,
                   imgUrl,
                 },
               },

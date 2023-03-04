@@ -14,7 +14,7 @@ import { fetcher } from '@/utils';
 
 export default function CoffeeStore(props) {
   const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
-  const [votingCount, setVotingCount] = useState(props.coffeeStore.voting || 0);
+  const [votingCount, setVotingCount] = useState(props.coffeeStore?.voting || 0);
 
   const {
     state: { coffeeStores },
@@ -29,8 +29,12 @@ export default function CoffeeStore(props) {
     if (data?.[0]) {
       const store = data[0];
       setVotingCount(store.voting);
+      if (!coffeeStore) {
+        setCoffeeStore(store);
+        setVotingCount(store.voting);
+      }
     }
-  }, [data]);
+  }, [coffeeStore, data]);
 
   useEffect(() => {
     if (props.coffeeStore) {
