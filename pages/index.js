@@ -11,7 +11,7 @@ import useTrackLocation from '@/hooks/use-track-location';
 import { useStore, ACTION_TYPES } from '@/store/store-context';
 
 export default function Home(props) {
-  console.log('test 456');
+  console.log('test');
   const { handleTrackLocation, latLong } = useTrackLocation();
   const [isLoading, setLoading] = useState(false);
 
