@@ -1,7 +1,7 @@
 import { table, getMinifiedRecords, findRecordByFilter } from '../../lib/airtable';
 
 const createCoffeeStore = async (req, res) => {
-  console.log('abcd', req);
+  console.log('abcde', req);
   if (req.method === 'POST') {
     //find a record
 
