@@ -69,7 +69,9 @@ export default function Home(props) {
         />
         {items.length > 0 ? (
           <>
-            <h2 className={styles.heading2}>{coffeeStores ? 'Stores near me' : 'Some Stores'}</h2>
+            <h2 className={styles.heading2}>
+              {coffeeStores ? 'Stores next to me' : 'Some Stores'}
+            </h2>
             <div className={styles.cardLayout}>
               {items.map((item) => {
                 return (
